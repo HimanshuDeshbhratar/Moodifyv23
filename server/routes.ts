@@ -71,42 +71,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Emotion is required' });
       }
       
-      // Map emotions to search queries and seed genres
+      // Map emotions to search queries with focus on Hindi music
       let searchQuery = '';
       let targetGenre = '';
       
       switch (emotion) {
         case 'happy':
-          searchQuery = 'happy upbeat';
-          targetGenre = 'pop';
+          searchQuery = 'hindi happy upbeat bollywood';
+          targetGenre = 'indian';
           break;
         case 'sad':
-          searchQuery = 'sad melancholy';
-          targetGenre = 'sad';
+          searchQuery = 'hindi sad melancholy bollywood';
+          targetGenre = 'indian';
           break;
         case 'angry':
-          searchQuery = 'angry intense';
-          targetGenre = 'rock';
+          searchQuery = 'hindi intense bollywood';
+          targetGenre = 'indian';
           break;
         case 'neutral':
-          searchQuery = 'chill relaxing';
-          targetGenre = 'ambient';
+          searchQuery = 'hindi chill relaxing bollywood';
+          targetGenre = 'indian';
           break;
         case 'surprised':
-          searchQuery = 'exciting surprise';
-          targetGenre = 'electronic';
+          searchQuery = 'hindi exciting bollywood';
+          targetGenre = 'indian';
           break;
         case 'fearful':
-          searchQuery = 'calm soothing';
-          targetGenre = 'classical';
+          searchQuery = 'hindi calm soothing bollywood';
+          targetGenre = 'indian';
           break;
         case 'disgusted':
-          searchQuery = 'moody atmospheric';
-          targetGenre = 'blues';
+          searchQuery = 'hindi moody atmospheric bollywood';
+          targetGenre = 'indian';
           break;
         default:
-          searchQuery = 'popular';
-          targetGenre = 'pop';
+          searchQuery = 'popular hindi bollywood';
+          targetGenre = 'indian';
       }
       
       console.log(`Getting recommendations for emotion: ${emotion} with query: ${searchQuery}`);
@@ -137,7 +137,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Try searching instead of recommendations API
       // This is a fallback mechanism as the recommendations API is having issues
       // Request more tracks (20) so we can filter for ones with previews
-      const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}%20genre:${targetGenre}&type=track&limit=20`;
+      // Use the search query directly without forcing genre to better find Hindi songs
+      const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}&type=track&limit=20&market=IN`;
       console.log(`Searching Spotify: ${searchUrl}`);
       
       const searchResponse = await fetch(searchUrl, {
