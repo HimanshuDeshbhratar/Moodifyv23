@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -16,8 +16,18 @@ export default function SongRecommendations({ emotion }: SongRecommendationsProp
   // Fetch song recommendations based on emotion
   const { data: songs, isLoading, isError, refetch } = useQuery<Song[]>({
     queryKey: [emotion ? `/api/spotify/recommendations/emotion/${emotion.emotion}` : null],
-    enabled: !!emotion,
+    enabled: !!emotion
   });
+
+  // Auto-play the first song with a preview when songs load
+  useEffect(() => {
+    if (songs && songs.length > 0) {
+      const songWithPreview = songs.find(song => song.previewUrl);
+      if (songWithPreview) {
+        handlePlayClick(songWithPreview);
+      }
+    }
+  }, [songs]);
 
   // Handle play/pause button click
   const handlePlayClick = (song: Song) => {
