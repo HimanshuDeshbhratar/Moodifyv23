@@ -71,36 +71,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Emotion is required' });
       }
       
-      // Map emotions to Spotify seed genres
-      let seedGenres = '';
+      // Map emotions to search queries and seed genres
+      let searchQuery = '';
+      let targetGenre = '';
       
       switch (emotion) {
         case 'happy':
-          seedGenres = 'pop,happy,dance';
+          searchQuery = 'happy upbeat';
+          targetGenre = 'pop';
           break;
         case 'sad':
-          seedGenres = 'sad,piano';
+          searchQuery = 'sad melancholy';
+          targetGenre = 'sad';
           break;
         case 'angry':
-          seedGenres = 'rock,metal';
+          searchQuery = 'angry intense';
+          targetGenre = 'rock';
           break;
         case 'neutral':
-          seedGenres = 'acoustic,ambient';
+          searchQuery = 'chill relaxing';
+          targetGenre = 'ambient';
           break;
         case 'surprised':
-          seedGenres = 'electronic,dance';
+          searchQuery = 'exciting surprise';
+          targetGenre = 'electronic';
           break;
         case 'fearful':
-          seedGenres = 'classical,ambient';
+          searchQuery = 'calm soothing';
+          targetGenre = 'classical';
           break;
         case 'disgusted':
-          seedGenres = 'blues,jazz';
+          searchQuery = 'moody atmospheric';
+          targetGenre = 'blues';
           break;
         default:
-          seedGenres = 'pop';
+          searchQuery = 'popular';
+          targetGenre = 'pop';
       }
       
-      console.log(`Getting recommendations for emotion: ${emotion} with seed genres: ${seedGenres}`);
+      console.log(`Getting recommendations for emotion: ${emotion} with query: ${searchQuery}`);
       
       // Get access token from Spotify
       const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
@@ -125,33 +134,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tokenData = await tokenResponse.json() as { access_token: string };
       console.log('Successfully obtained Spotify access token');
       
-      // Get recommendations with fixed parameters
-      const recommendationsUrl = `https://api.spotify.com/v1/recommendations?seed_genres=${seedGenres}&limit=8`;
-      console.log(`Requesting recommendations from: ${recommendationsUrl}`);
+      // Try searching instead of recommendations API
+      // This is a fallback mechanism as the recommendations API is having issues
+      const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}%20genre:${targetGenre}&type=track&limit=8`;
+      console.log(`Searching Spotify: ${searchUrl}`);
       
-      const recommendationsResponse = await fetch(recommendationsUrl, {
+      const searchResponse = await fetch(searchUrl, {
         headers: {
           'Authorization': `Bearer ${tokenData.access_token}`
         }
       });
       
-      if (!recommendationsResponse.ok) {
-        const error = await recommendationsResponse.text();
-        console.error('Spotify recommendations error:', error);
-        return res.status(500).json({ message: 'Failed to get recommendations from Spotify' });
+      if (!searchResponse.ok) {
+        const errorText = await searchResponse.text();
+        console.error(`Spotify search error (status ${searchResponse.status}):`, errorText);
+        
+        // Try to parse error response if it's JSON
+        let errorMessage = 'Failed to search Spotify';
+        try {
+          const errorJSON = JSON.parse(errorText);
+          if (errorJSON.error && errorJSON.error.message) {
+            errorMessage = `Spotify API error: ${errorJSON.error.message}`;
+            console.error('Parsed error:', errorJSON);
+          }
+        } catch (e) {
+          // Not JSON, use text as is
+        }
+        
+        return res.status(500).json({ message: errorMessage });
       }
       
-      const recommendationsData = await recommendationsResponse.json();
-      console.log(`Retrieved ${recommendationsData.tracks.length} tracks from Spotify`);
+      const searchData = await searchResponse.json() as { 
+        tracks: { 
+          items: Array<{
+            id: string;
+            name: string;
+            artists: Array<{ name: string }>;
+            album: { name: string; images: Array<{ url: string }> };
+            preview_url: string | null;
+          }>
+        } 
+      };
+      
+      console.log(`Retrieved ${searchData.tracks.items.length} tracks from Spotify search`);
       
       // Transform the data to match our schema
-      const songs = recommendationsData.tracks.map((track: any) => ({
+      const songs = searchData.tracks.items.map((track) => ({
         id: track.id,
         name: track.name,
         artist: track.artists[0].name,
         album: track.album.name,
-        imageUrl: track.album.images[0]?.url,
-        previewUrl: track.preview_url,
+        imageUrl: track.album.images[0]?.url || '',
+        previewUrl: track.preview_url || '',
         emotion: emotion
       }));
       
@@ -189,7 +223,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ message: 'Failed to fetch weather data' });
       }
       
-      const weatherData = await weatherResponse.json();
+      const weatherData = await weatherResponse.json() as {
+        main: { temp: number };
+        weather: Array<{ main: string; icon: string }>;
+        name: string;
+      };
       
       // Transform weather data to match our schema
       const weather = {
