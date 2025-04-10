@@ -244,10 +244,14 @@ export default function WebcamSection({ onEmotionDetected }: WebcamSectionProps)
           
           {detectedEmotion ? (
             <div className="relative h-16">
-              <div className={`absolute inset-0 bg-${detectedEmotion.emotion === 'happy' ? '[#FFD700]' : 
-                               detectedEmotion.emotion === 'sad' ? '[#4B6CBF]' : 
-                               detectedEmotion.emotion === 'angry' ? '[#E54B4B]' : 
-                               '[#9B9B9B]'}/20 rounded-lg p-4 flex items-center justify-between`}>
+              <div className={`absolute inset-0 bg-${
+                detectedEmotion.emotion === 'happy' ? '[#FFD700]' : 
+                detectedEmotion.emotion === 'sad' ? '[#4B6CBF]' : 
+                detectedEmotion.emotion === 'angry' ? '[#E54B4B]' : 
+                detectedEmotion.emotion === 'surprised' ? '[#9C27B0]' :
+                detectedEmotion.emotion === 'fearful' ? '[#8BC34A]' :
+                detectedEmotion.emotion === 'disgusted' ? '[#795548]' :
+                '[#9B9B9B]'}/20 rounded-lg p-4 flex items-center justify-between`}>
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{getEmotionEmoji()}</span>
                   <div>
@@ -256,6 +260,9 @@ export default function WebcamSection({ onEmotionDetected }: WebcamSectionProps)
                       {detectedEmotion.emotion === 'happy' ? 'Upbeat music coming your way!' :
                        detectedEmotion.emotion === 'sad' ? 'Comforting melodies for you' :
                        detectedEmotion.emotion === 'angry' ? 'Release that energy with intense tracks' :
+                       detectedEmotion.emotion === 'surprised' ? 'Exciting tracks to match your surprise!' :
+                       detectedEmotion.emotion === 'fearful' ? 'Calming music to ease your mind' :
+                       detectedEmotion.emotion === 'disgusted' ? 'Soothing atmospheric tunes' :
                        'Balanced tunes for your neutral mood'}
                     </p>
                   </div>
@@ -269,11 +276,14 @@ export default function WebcamSection({ onEmotionDetected }: WebcamSectionProps)
             </div>
           )}
           
-          <div className="flex justify-between mt-4 text-xs text-gray-400">
-            <div className="flex items-center"><span className="w-2 h-2 bg-[#FFD700] rounded-full mr-1"></span> Happy</div>
-            <div className="flex items-center"><span className="w-2 h-2 bg-[#4B6CBF] rounded-full mr-1"></span> Sad</div>
-            <div className="flex items-center"><span className="w-2 h-2 bg-[#9B9B9B] rounded-full mr-1"></span> Neutral</div>
-            <div className="flex items-center"><span className="w-2 h-2 bg-[#E54B4B] rounded-full mr-1"></span> Angry</div>
+          <div className="flex flex-wrap justify-between mt-4 text-xs text-gray-400">
+            <div className="flex items-center mb-1"><span className="w-2 h-2 bg-[#FFD700] rounded-full mr-1"></span> Happy</div>
+            <div className="flex items-center mb-1"><span className="w-2 h-2 bg-[#4B6CBF] rounded-full mr-1"></span> Sad</div>
+            <div className="flex items-center mb-1"><span className="w-2 h-2 bg-[#9B9B9B] rounded-full mr-1"></span> Neutral</div>
+            <div className="flex items-center mb-1"><span className="w-2 h-2 bg-[#E54B4B] rounded-full mr-1"></span> Angry</div>
+            <div className="flex items-center mb-1"><span className="w-2 h-2 bg-[#9C27B0] rounded-full mr-1"></span> Surprised</div>
+            <div className="flex items-center mb-1"><span className="w-2 h-2 bg-[#8BC34A] rounded-full mr-1"></span> Fearful</div>
+            <div className="flex items-center mb-1"><span className="w-2 h-2 bg-[#795548] rounded-full mr-1"></span> Disgusted</div>
           </div>
         </div>
       </div>

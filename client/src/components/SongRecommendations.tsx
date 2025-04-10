@@ -68,6 +68,9 @@ export default function SongRecommendations({ emotion }: SongRecommendationsProp
       case 'sad': return 'Melancholy';
       case 'angry': return 'Intense';
       case 'neutral': return 'Balanced';
+      case 'surprised': return 'Uplifting';
+      case 'fearful': return 'Calming';
+      case 'disgusted': return 'Atmospheric';
       default: return 'Mood Match';
     }
   };
@@ -79,6 +82,9 @@ export default function SongRecommendations({ emotion }: SongRecommendationsProp
       case 'sad': return 'bg-[#4B6CBF]/30';
       case 'angry': return 'bg-[#E54B4B]/30';
       case 'neutral': return 'bg-[#9B9B9B]/30';
+      case 'surprised': return 'bg-[#9C27B0]/30';
+      case 'fearful': return 'bg-[#8BC34A]/30';
+      case 'disgusted': return 'bg-[#795548]/30';
       default: return 'bg-gray-500/30';
     }
   };
