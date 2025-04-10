@@ -22,10 +22,11 @@ export default function SongRecommendations({ emotion }: SongRecommendationsProp
   // Handle play/pause button click
   const handlePlayClick = (song: Song) => {
     if (!song.previewUrl) {
+      // Open Spotify web player if no preview is available
+      window.open(`https://open.spotify.com/track/${song.id}`, '_blank');
       toast({
-        title: "Preview unavailable",
-        description: "No preview available for this track",
-        variant: "destructive"
+        title: "Opening in Spotify",
+        description: "This track doesn't have a preview, opening in Spotify instead",
       });
       return;
     }
@@ -44,10 +45,12 @@ export default function SongRecommendations({ emotion }: SongRecommendationsProp
       const audio = new Audio(song.previewUrl);
       audio.play().catch(error => {
         console.error('Error playing audio:', error);
+        
+        // Fallback to opening in Spotify on error
+        window.open(`https://open.spotify.com/track/${song.id}`, '_blank');
         toast({
           title: "Playback error",
-          description: "Unable to play preview",
-          variant: "destructive"
+          description: "Opening track in Spotify instead",
         });
       });
       
@@ -194,12 +197,23 @@ export default function SongRecommendations({ emotion }: SongRecommendationsProp
                 <h3 className="font-semibold truncate">{song.name}</h3>
                 <p className="text-gray-400 text-sm truncate mb-3">{song.artist}</p>
                 <div className="flex justify-between items-center">
-                  <span className={`text-xs ${getEmotionColorClass(song.emotion)} text-white/90 px-2 py-1 rounded-full`}>
-                    {getEmotionLabel(song.emotion)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs ${getEmotionColorClass(song.emotion)} text-white/90 px-2 py-1 rounded-full`}>
+                      {getEmotionLabel(song.emotion)}
+                    </span>
+                    {!song.previewUrl && (
+                      <span className="text-xs text-gray-400" title="Opens in Spotify">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        Spotify
+                      </span>
+                    )}
+                  </div>
                   <Button
                     className={`text-white ${isPlaying === song.id ? 'bg-[#1ED760]' : 'bg-[#1DB954] hover:bg-[#1ED760]'} rounded-full w-10 h-10 p-0 flex items-center justify-center transition-colors`}
                     onClick={() => handlePlayClick(song)}
+                    title={song.previewUrl ? "Play preview" : "Open in Spotify"}
                   >
                     {isPlaying === song.id ? (
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -136,7 +136,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Try searching instead of recommendations API
       // This is a fallback mechanism as the recommendations API is having issues
-      const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}%20genre:${targetGenre}&type=track&limit=8`;
+      // Request more tracks (20) so we can filter for ones with previews
+      const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}%20genre:${targetGenre}&type=track&limit=20`;
       console.log(`Searching Spotify: ${searchUrl}`);
       
       const searchResponse = await fetch(searchUrl, {
@@ -178,8 +179,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`Retrieved ${searchData.tracks.items.length} tracks from Spotify search`);
       
+      // Filter tracks to prioritize ones with preview URLs and take only up to 8
+      const filteredTracks = searchData.tracks.items
+        .filter(track => track.preview_url)
+        .slice(0, 8);
+        
+      // If we have no tracks with previews, fall back to all tracks
+      const tracksToUse = filteredTracks.length > 0 ? 
+        filteredTracks : 
+        searchData.tracks.items.slice(0, 8);
+      
+      console.log(`Found ${filteredTracks.length} tracks with previews`);
+      
       // Transform the data to match our schema
-      const songs = searchData.tracks.items.map((track) => ({
+      const songs = tracksToUse.map((track) => ({
         id: track.id,
         name: track.name,
         artist: track.artists[0].name,
