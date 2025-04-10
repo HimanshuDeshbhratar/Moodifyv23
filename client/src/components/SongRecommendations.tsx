@@ -19,12 +19,24 @@ export default function SongRecommendations({ emotion }: SongRecommendationsProp
     enabled: !!emotion
   });
 
-  // Auto-play the first song with a preview when songs load
+  // Handle auto-play for the first appropriate song
   useEffect(() => {
     if (songs && songs.length > 0) {
-      const songWithPreview = songs.find(song => song.previewUrl);
-      if (songWithPreview) {
-        handlePlayClick(songWithPreview);
+      // First check if we have at least one song with a preview
+      const hasPreviewSongs = songs.some(song => song.previewUrl);
+      
+      if (hasPreviewSongs) {
+        // Only auto-play if we have preview URLs available
+        const songWithPreview = songs.find(song => song.previewUrl);
+        if (songWithPreview) {
+          handlePlayClick(songWithPreview);
+        }
+      } else {
+        // If no songs have previews, notify the user
+        toast({
+          title: "No Preview Available",
+          description: "Hindi songs often don't have previews. Click a song to open it in Spotify instead."
+        });
       }
     }
   }, [songs]);
