@@ -71,25 +71,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Emotion is required' });
       }
       
-      // Map emotions to Spotify attributes
-      let searchParams = '';
+      // Map emotions to Spotify seed genres
+      let seedGenres = '';
       
       switch (emotion) {
         case 'happy':
-          searchParams = 'genre=pop&min_energy=0.7&min_valence=0.7&target_tempo=120';
+          seedGenres = 'pop,happy,dance';
           break;
         case 'sad':
-          searchParams = 'genre=piano,sad&max_energy=0.4&max_valence=0.4&target_tempo=90';
+          seedGenres = 'sad,piano';
           break;
         case 'angry':
-          searchParams = 'genre=rock,metal&min_energy=0.8&max_valence=0.4&target_tempo=140';
+          seedGenres = 'rock,metal';
           break;
         case 'neutral':
-          searchParams = 'genre=acoustic,ambient&target_energy=0.5&target_valence=0.5';
+          seedGenres = 'acoustic,ambient';
+          break;
+        case 'surprised':
+          seedGenres = 'electronic,dance';
+          break;
+        case 'fearful':
+          seedGenres = 'classical,ambient';
+          break;
+        case 'disgusted':
+          seedGenres = 'blues,jazz';
           break;
         default:
-          searchParams = 'genre=pop';
+          seedGenres = 'pop';
       }
+      
+      console.log(`Getting recommendations for emotion: ${emotion} with seed genres: ${seedGenres}`);
       
       // Get access token from Spotify
       const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
@@ -112,16 +123,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const tokenData = await tokenResponse.json() as { access_token: string };
+      console.log('Successfully obtained Spotify access token');
       
-      // Get recommendations
-      const recommendationsResponse = await fetch(
-        `https://api.spotify.com/v1/recommendations?${searchParams}&limit=8`, 
-        {
-          headers: {
-            'Authorization': `Bearer ${tokenData.access_token}`
-          }
+      // Get recommendations with fixed parameters
+      const recommendationsUrl = `https://api.spotify.com/v1/recommendations?seed_genres=${seedGenres}&limit=8`;
+      console.log(`Requesting recommendations from: ${recommendationsUrl}`);
+      
+      const recommendationsResponse = await fetch(recommendationsUrl, {
+        headers: {
+          'Authorization': `Bearer ${tokenData.access_token}`
         }
-      );
+      });
       
       if (!recommendationsResponse.ok) {
         const error = await recommendationsResponse.text();
@@ -130,6 +142,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const recommendationsData = await recommendationsResponse.json();
+      console.log(`Retrieved ${recommendationsData.tracks.length} tracks from Spotify`);
       
       // Transform the data to match our schema
       const songs = recommendationsData.tracks.map((track: any) => ({
