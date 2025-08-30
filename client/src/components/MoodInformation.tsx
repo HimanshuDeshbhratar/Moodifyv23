@@ -3,9 +3,10 @@ import type { Emotion } from '@shared/schema';
 
 interface MoodInformationProps {
   currentMood: Emotion | null;
+  stableEmotion?: Emotion | null;
 }
 
-export default function MoodInformation({ currentMood }: MoodInformationProps) {
+export default function MoodInformation({ currentMood, stableEmotion }: MoodInformationProps) {
   // Get emotion-specific content
   const getMoodInfo = () => {
     if (!currentMood) return null;
@@ -93,6 +94,22 @@ export default function MoodInformation({ currentMood }: MoodInformationProps) {
             <h3 className="font-semibold text-lg mb-2">Waiting for mood detection</h3>
             <p className="text-white/80 text-sm">
               Look at the camera so we can analyze your mood and suggest appropriate music.
+            </p>
+          </div>
+        )}
+        
+        {/* Stable Emotion Indicator */}
+        {stableEmotion && (
+          <div className="mb-6 bg-[#1DB954]/10 border border-[#1DB954] rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#1DB954]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h4 className="text-sm font-medium text-[#1DB954]">Stable Mood Detected</h4>
+            </div>
+            <p className="text-sm text-white/80">
+              Music recommendations are based on your stable <strong>{stableEmotion.emotion}</strong> mood.
+              Songs will update automatically when your mood changes consistently.
             </p>
           </div>
         )}

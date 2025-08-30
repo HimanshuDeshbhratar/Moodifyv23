@@ -6,18 +6,27 @@ import type { Emotion, Song } from '@shared/schema';
 
 interface SongRecommendationsProps {
   emotion: Emotion | null;
+  onManualRefresh?: () => void;
+  refreshTrigger?: number;
 }
 
-export default function SongRecommendations({ emotion }: SongRecommendationsProps) {
+export default function SongRecommendations({ emotion, onManualRefresh, refreshTrigger }: SongRecommendationsProps) {
   const { toast } = useToast();
   const [isPlaying, setIsPlaying] = useState<string | null>(null);
   const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
 
   // Fetch song recommendations based on emotion
   const { data: songs, isLoading, isError, refetch } = useQuery<Song[]>({
-    queryKey: [emotion ? `/api/spotify/recommendations/emotion/${emotion.emotion}` : null],
+    queryKey: [emotion ? `/api/spotify/recommendations/emotion/${emotion.emotion}?trigger=${refreshTrigger || 0}` : null],
     enabled: !!emotion
   });
+  
+  // Handle manual refresh trigger
+  useEffect(() => {
+    if (refreshTrigger && refreshTrigger > 0) {
+      refetch();
+    }
+  }, [refreshTrigger, refetch]);
 
   // Handle auto-play for the first appropriate song
   useEffect(() => {

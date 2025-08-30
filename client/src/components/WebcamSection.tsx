@@ -7,15 +7,24 @@ import type { Emotion } from '@shared/schema';
 
 interface WebcamSectionProps {
   onEmotionDetected: (emotion: Emotion) => void;
+  onStableEmotionDetected?: (emotion: Emotion) => void;
 }
 
-export default function WebcamSection({ onEmotionDetected }: WebcamSectionProps) {
+export default function WebcamSection({ onEmotionDetected, onStableEmotionDetected }: WebcamSectionProps) {
   const { toast } = useToast();
   const webcamRef = useRef<Webcam>(null);
   const [cameraPermission, setCameraPermission] = useState<'not-granted' | 'granted' | 'denied'>('not-granted');
   const [isModelLoading, setIsModelLoading] = useState(true);
   const [detectedEmotion, setDetectedEmotion] = useState<Emotion | null>(null);
+  const [stableEmotion, setStableEmotion] = useState<Emotion | null>(null);
   const [facePosition, setFacePosition] = useState<{ top: number, left: number, width: number, height: number } | null>(null);
+  
+  // Emotion stabilization state
+  const emotionHistory = useRef<Emotion[]>([]);
+  const lastStableEmotionTime = useRef<number>(0);
+  const EMOTION_HISTORY_SIZE = 5;
+  const STABLE_EMOTION_THRESHOLD = 3; // Need 3 out of 5 same emotions
+  const MIN_STABLE_INTERVAL = 8000; // 8 seconds minimum between stable emotion updates
 
   // Load face-api models on component mount
   useEffect(() => {
@@ -98,6 +107,48 @@ export default function WebcamSection({ onEmotionDetected }: WebcamSectionProps)
         
         // Pass emotion to parent component
         onEmotionDetected(emotion);
+        
+        // Add to emotion history for stabilization
+        emotionHistory.current.push(emotion);
+        if (emotionHistory.current.length > EMOTION_HISTORY_SIZE) {
+          emotionHistory.current.shift();
+        }
+        
+        // Check for stable emotion
+        if (emotionHistory.current.length === EMOTION_HISTORY_SIZE) {
+          const emotionCounts = emotionHistory.current.reduce((acc, curr) => {
+            acc[curr.emotion] = (acc[curr.emotion] || 0) + 1;
+            return acc;
+          }, {} as Record<string, number>);
+          
+          const dominantEmotion = Object.entries(emotionCounts)
+            .find(([_, count]) => count >= STABLE_EMOTION_THRESHOLD);
+            
+          if (dominantEmotion && 
+              Date.now() - lastStableEmotionTime.current >= MIN_STABLE_INTERVAL &&
+              stableEmotion?.emotion !== dominantEmotion[0]) {
+            
+            const newStableEmotion = {
+              emotion: dominantEmotion[0] as Emotion['emotion'],
+              probability: emotionHistory.current
+                .filter(e => e.emotion === dominantEmotion[0])
+                .reduce((sum, e) => sum + e.probability, 0) / dominantEmotion[1]
+            };
+            
+            setStableEmotion(newStableEmotion);
+            lastStableEmotionTime.current = Date.now();
+            
+            if (onStableEmotionDetected) {
+              onStableEmotionDetected(newStableEmotion);
+            }
+            
+            toast({
+              title: `Stable mood detected: ${newStableEmotion.emotion}`,
+              description: "Music recommendations will update to match your mood.",
+              duration: 3000
+            });
+          }
+        }
       } else {
         // No face detected
         console.log('No face detected');

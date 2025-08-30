@@ -11,7 +11,9 @@ import type { Emotion, Weather } from '@shared/schema';
 export default function Home() {
   const { toast } = useToast();
   const [currentEmotion, setCurrentEmotion] = useState<Emotion | null>(null);
+  const [stableEmotion, setStableEmotion] = useState<Emotion | null>(null);
   const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
+  const [manualRefreshTrigger, setManualRefreshTrigger] = useState(0);
 
   // Get user's location for weather data
   useEffect(() => {
@@ -52,6 +54,38 @@ export default function Home() {
   const handleEmotionDetected = (emotion: Emotion) => {
     setCurrentEmotion(emotion);
   };
+  
+  // Handle stable emotion detection for song recommendations
+  const handleStableEmotionDetected = (emotion: Emotion) => {
+    setStableEmotion(emotion);
+  };
+  
+  // Handle manual refresh of recommendations
+  const handleManualRefresh = () => {
+    if (stableEmotion) {
+      setManualRefreshTrigger(prev => prev + 1);
+      toast({
+        title: "Refreshing recommendations",
+        description: `Getting new ${stableEmotion.emotion} songs for you!`,
+        duration: 2000
+      });
+    } else if (currentEmotion) {
+      // Use current emotion if no stable emotion detected yet
+      setStableEmotion(currentEmotion);
+      setManualRefreshTrigger(prev => prev + 1);
+      toast({
+        title: "Refreshing recommendations",
+        description: `Getting ${currentEmotion.emotion} songs based on your current mood!`,
+        duration: 2000
+      });
+    } else {
+      toast({
+        title: "No emotion detected",
+        description: "Please look at the camera to detect your mood first.",
+        variant: "destructive"
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#191414] to-[#0D0D0D] text-white">
@@ -79,12 +113,19 @@ export default function Home() {
           {/* Webcam and Emotion Detection Section */}
           <section className="mb-12">
             <div className="flex flex-col lg:flex-row gap-8">
-              <WebcamSection onEmotionDetected={handleEmotionDetected} />
-              <MoodInformation currentMood={currentEmotion} />
+              <WebcamSection 
+                onEmotionDetected={handleEmotionDetected} 
+                onStableEmotionDetected={handleStableEmotionDetected}
+              />
+              <MoodInformation currentMood={currentEmotion} stableEmotion={stableEmotion} />
             </div>
           </section>
 
-          <SongRecommendations emotion={currentEmotion} />
+          <SongRecommendations 
+            emotion={stableEmotion || currentEmotion} 
+            onManualRefresh={handleManualRefresh}
+            refreshTrigger={manualRefreshTrigger}
+          />
         </main>
 
         {/* Footer Section */}
