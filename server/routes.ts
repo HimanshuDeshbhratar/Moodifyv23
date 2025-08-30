@@ -6,6 +6,44 @@ import fetch from "node-fetch";
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes prefixed with /api
   
+  // API Status endpoint for testing configuration
+  app.get('/api/status', async (req, res) => {
+    const status = {
+      spotify: validateSpotifyCredentials(),
+      weather: validateWeatherKey(),
+      timestamp: new Date().toISOString()
+    };
+    
+    console.log('API Status Check:', status);
+    
+    return res.json({
+      message: 'API Configuration Status',
+      services: {
+        spotify: status.spotify ? '✅ Configured' : '❌ Missing credentials',
+        weather: status.weather ? '✅ Configured' : '❌ Missing API key'
+      },
+      instructions: status.spotify && status.weather ? 
+        'All APIs are configured correctly!' : 
+        'Please check API_SETUP_INSTRUCTIONS.md for setup guide'
+    });
+  });
+  
+  // Environment variable validation
+  const validateSpotifyCredentials = () => {
+    const clientId = process.env.SPOTIFY_CLIENT_ID;
+    const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+    
+    if (!clientId || clientId === 'your_spotify_client_id_here' || !clientSecret || clientSecret === 'your_spotify_client_secret_here') {
+      return false;
+    }
+    return true;
+  };
+  
+  const validateWeatherKey = () => {
+    const apiKey = process.env.OPENWEATHER_API_KEY;
+    return apiKey && apiKey !== 'your_openweather_api_key_here';
+  };
+  
   // Spotify API endpoints
   app.get('/api/spotify/search', async (req, res) => {
     try {
@@ -71,35 +109,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Emotion is required' });
       }
       
-      // Try a hybrid approach with both Hindi and international songs
-      // to increase chances of getting playable previews while still prioritizing Hindi music
-      let searchQuery = '';
+      // Check if Spotify credentials are configured
+      if (!validateSpotifyCredentials()) {
+        console.error('Spotify credentials not configured');
+        return res.status(500).json({ 
+          message: 'Spotify API credentials not configured. Please check your .env file.',
+          details: 'Missing SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET'
+        });
+      }
+      
+      // Create diverse searches including both latest and classic songs
+      const searchQueries = [];
       
       switch (emotion) {
         case 'happy':
-          searchQuery = 'bollywood hindi happy OR upbeat songs arijit';
+          searchQueries.push(
+            'bollywood hindi happy songs 2023 2024',  // Latest
+            'classic bollywood happy songs 90s 2000s', // Classic
+            'hindi upbeat dance songs arijit singh'    // Popular artists
+          );
           break;
         case 'sad':
-          searchQuery = 'bollywood hindi sad OR melancholic songs';
+          searchQueries.push(
+            'bollywood hindi sad songs 2023 2024',
+            'classic hindi sad songs kumar sanu udit narayan',
+            'hindi emotional songs arijit singh rahat'
+          );
           break;
         case 'angry':
-          searchQuery = 'bollywood hindi powerful OR intense songs';
+          searchQueries.push(
+            'bollywood hindi intense songs 2023 2024',
+            'classic hindi powerful songs 90s rock',
+            'hindi motivational songs energetic'
+          );
           break;
         case 'neutral':
-          searchQuery = 'bollywood hindi melodious OR chill songs';
+          searchQueries.push(
+            'bollywood hindi melodious songs 2023 2024',
+            'classic hindi songs evergreen collection',
+            'hindi chill songs lofi indian'
+          );
           break;
         case 'surprised':
-          searchQuery = 'bollywood hindi upbeat OR exciting songs';
+          searchQueries.push(
+            'bollywood hindi upbeat songs 2023 2024',
+            'classic hindi exciting songs energetic',
+            'hindi party songs dance bollywood'
+          );
           break;
         case 'fearful':
-          searchQuery = 'bollywood hindi soothing OR calming songs';
+          searchQueries.push(
+            'bollywood hindi soothing songs 2023 2024',
+            'classic hindi calming songs peaceful',
+            'hindi meditation relaxing instrumental'
+          );
           break;
         case 'disgusted':
-          searchQuery = 'bollywood hindi atmospheric OR moody songs';
+          searchQueries.push(
+            'bollywood hindi atmospheric songs 2023 2024',
+            'classic hindi moody songs deep',
+            'hindi ambient instrumental peaceful'
+          );
           break;
         default:
-          searchQuery = 'popular bollywood hindi OR international songs';
+          searchQueries.push(
+            'popular bollywood hindi songs 2023 2024',
+            'classic hindi songs collection evergreen',
+            'best bollywood songs all time'
+          );
       }
+      
+      // Randomly select one search query for variety
+      const searchQuery = searchQueries[Math.floor(Math.random() * searchQueries.length)];
+      console.log(`Selected search query: ${searchQuery}`);
+      
+      // Add randomization to get different results on refresh by adding random terms
+      const randomTerms = ['popular', 'trending', 'hit', 'top', 'best', 'latest'];
+      const finalQuery = `${searchQuery} ${randomTerms[Math.floor(Math.random() * randomTerms.length)]}`;
+      console.log(`Final search query: ${finalQuery}`);
       
       console.log(`Getting recommendations for emotion: ${emotion} with query: ${searchQuery}`);
       
@@ -126,12 +213,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tokenData = await tokenResponse.json() as { access_token: string };
       console.log('Successfully obtained Spotify access token');
       
-      // Try searching instead of recommendations API
-      // This is a fallback mechanism as the recommendations API is having issues
-      // Request more tracks (20) so we can filter for ones with previews
-      // Try global market to get more tracks with previews while still using Hindi search terms
-      // This increases our chances of finding playable content while maintaining Hindi focus
-      const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}&type=track&limit=40`;
+      // Use the enhanced search with randomization for better variety
+      // Request more tracks (40) so we can filter for ones with previews
+      // This increases our chances of finding playable content while maintaining variety
+      const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(finalQuery)}&type=track&limit=40&market=IN`;
       console.log(`Searching Spotify: ${searchUrl}`);
       
       const searchResponse = await fetch(searchUrl, {
@@ -211,6 +296,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if ((!lat || !lon) && !city) {
         return res.status(400).json({ message: 'Either coordinates (lat, lon) or city name is required' });
+      }
+      
+      // Check if Weather API key is configured
+      if (!validateWeatherKey()) {
+        console.error('OpenWeather API key not configured');
+        return res.status(500).json({ 
+          message: 'Weather API key not configured. Please check your .env file.',
+          details: 'Missing OPENWEATHER_API_KEY'
+        });
       }
       
       let url = '';
