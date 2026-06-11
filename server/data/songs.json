@@ -1,0 +1,92 @@
+{
+  "happy": [
+    {"id":"happy_1","name":"Ilahi","artist":"Arijit Singh","album":"Yeh Jawaani Hai Deewani","emotion":"happy","youtube_link":"https://www.youtube.com/watch?v=V3NHpNmYY8U"},
+    {"id":"happy_2","name":"Love You Zindagi","artist":"Amit Trivedi","album":"Dear Zindagi","emotion":"happy","youtube_link":"https://www.youtube.com/results?search_query=Love+You+Zindagi+Amit+Trivedi+Dear+Zindagi"},
+    {"id":"happy_3","name":"Gallan Goodiyaan","artist":"Yashita Sharma","album":"Dil Dhadakne Do","emotion":"happy","youtube_link":"https://www.youtube.com/results?search_query=Gallan+Goodiyaan+Yashita+Sharma+Dil+Dhadakne+Do"},
+    {"id":"happy_4","name":"Kar Har Maidaan Fateh","artist":"Sukhwinder Singh","album":"Sanju","emotion":"happy","youtube_link":"https://www.youtube.com/results?search_query=Kar+Har+Maidaan+Fateh+Sukhwinder+Singh+Sanju"},
+    {"id":"happy_5","name":"Senorita","artist":"Farhan Akhtar","album":"Zindagi Na Milegi Dobara","emotion":"happy","youtube_link":"https://www.youtube.com/watch?v=CAHgJlOsNhM"},
+    {"id":"happy_6","name":"Kala Chashma","artist":"Amar Arshi","album":"Baar Baar Dekho","emotion":"happy","youtube_link":"https://www.youtube.com/watch?v=YvWKPU2mcLw"},
+    {"id":"happy_7","name":"Ghungroo","artist":"Arijit Singh","album":"War","emotion":"happy","youtube_link":"https://www.youtube.com/watch?v=xU9gsgMwf5A"},
+    {"id":"happy_8","name":"Badtameez Dil","artist":"Benny Dayal","album":"Yeh Jawaani Hai Deewani","emotion":"happy","youtube_link":"https://www.youtube.com/watch?v=pwKmLIPvEjI"},
+    {"id":"happy_9","name":"Nashe Si Chadh Gayi","artist":"Arijit Singh","album":"Befikre","emotion":"happy","youtube_link":"https://www.youtube.com/results?search_query=Nashe+Si+Chadh+Gayi+Arijit+Singh+Befikre"},
+    {"id":"happy_10","name":"Dil Dhadakne Do","artist":"Priyanka Chopra","album":"Dil Dhadakne Do","emotion":"happy","youtube_link":"https://www.youtube.com/results?search_query=Dil+Dhadakne+Do+Priyanka+Chopra"}
+  ],
+
+  "sad": [
+    {"id":"sad_1","name":"Channa Mereya","artist":"Arijit Singh","album":"Ae Dil Hai Mushkil","emotion":"sad","youtube_link":"https://www.youtube.com/results?search_query=Channa+Mereya+Arijit+Singh+Ae+Dil+Hai+Mushkil"},
+    {"id":"sad_2","name":"Agar Tum Saath Ho","artist":"Alka Yagnik","album":"Tamasha","emotion":"sad","youtube_link":"https://www.youtube.com/results?search_query=Agar+Tum+Saath+Ho+Alka+Yagnik+Tamasha"},
+    {"id":"sad_3","name":"Phir Le Aaya Dil","artist":"Arijit Singh","album":"Barfi","emotion":"sad","youtube_link":"https://www.youtube.com/watch?v=OHqJRf94xrc"},
+    {"id":"sad_4","name":"Kabira Encore","artist":"Arijit Singh","album":"Yeh Jawaani Hai Deewani","emotion":"sad","youtube_link":"https://www.youtube.com/watch?v=cG4ME1stMS4"},
+    {"id":"sad_5","name":"Hamari Adhuri Kahani","artist":"Arijit Singh","album":"Hamari Adhuri Kahani","emotion":"sad","youtube_link":"https://www.youtube.com/watch?v=63ZHNxtLE34"},
+    {"id":"sad_6","name":"Tujhe Bhula Diya","artist":"Mohit Chauhan","album":"Anjaana Anjaani","emotion":"sad","youtube_link":"https://www.youtube.com/results?search_query=Tujhe+Bhula+Diya+Mohit+Chauhan+Anjaana+Anjaani"},
+    {"id":"sad_7","name":"Jeena Jeena","artist":"Atif Aslam","album":"Badlapur","emotion":"sad","youtube_link":"https://www.youtube.com/watch?v=muVyzARrZbs"},
+    {"id":"sad_8","name":"Bekhayali","artist":"Sachet Tandon","album":"Kabir Singh","emotion":"sad","youtube_link":"https://www.youtube.com/results?search_query=Bekhayali+Sachet+Tandon+Kabir+Singh"},
+    {"id":"sad_9","name":"Khairiyat","artist":"Arijit Singh","album":"Chhichhore","emotion":"sad","youtube_link":"https://www.youtube.com/results?search_query=Khairiyat+Arijit+Singh+Chhichhore"},
+    {"id":"sad_10","name":"Tum Hi Ho","artist":"Arijit Singh","album":"Aashiqui 2","emotion":"sad","youtube_link":"https://www.youtube.com/results?search_query=Tum+Hi+Ho+Arijit+Singh+Aashiqui+2"}
+  ],
+
+  "angry": [
+    {"id":"angry_1","name":"Sultan","artist":"Sukhwinder Singh","album":"Sultan","emotion":"angry","youtube_link":"https://www.youtube.com/watch?v=abiL84EAWSY"},
+    {"id":"angry_2","name":"Dangal Title Track","artist":"Daler Mehndi","album":"Dangal","emotion":"angry","youtube_link":"https://www.youtube.com/results?search_query=Dangal+Title+Track+Daler+Mehndi"},
+    {"id":"angry_3","name":"Zinda","artist":"Siddharth Mahadevan","album":"Bhaag Milkha Bhaag","emotion":"angry","youtube_link":"https://www.youtube.com/results?search_query=Zinda+Siddharth+Mahadevan+Bhaag+Milkha+Bhaag"},
+    {"id":"angry_4","name":"Brothers Anthem","artist":"Vishal Dadlani","album":"Brothers","emotion":"angry","youtube_link":"https://www.youtube.com/watch?v=IjBAgWKW12Y"},
+    {"id":"angry_5","name":"Sher Aaya Sher","artist":"Divine","album":"Gully Boy","emotion":"angry","youtube_link":"https://www.youtube.com/watch?v=y8WKyV3BGY4"},
+    {"id":"angry_6","name":"Apna Time Aayega","artist":"Ranveer Singh","album":"Gully Boy","emotion":"angry","youtube_link":"https://www.youtube.com/watch?v=lYpV8R_3UTM"},
+    {"id":"angry_7","name":"Believer","artist":"Imagine Dragons","album":"Evolve","emotion":"angry","youtube_link":"https://www.youtube.com/watch?v=7wtfhZwyrcc"},
+    {"id":"angry_8","name":"Warriors","artist":"Imagine Dragons","album":"Warriors","emotion":"angry","youtube_link":"https://www.youtube.com/watch?v=wPQEeBAXou0"},
+    {"id":"angry_9","name":"Enemy","artist":"Imagine Dragons","album":"Mercury","emotion":"angry","youtube_link":"https://www.youtube.com/results?search_query=Enemy+Imagine+Dragons+Mercury"},
+    {"id":"angry_10","name":"Numb","artist":"Linkin Park","album":"Meteora","emotion":"angry","youtube_link":"https://www.youtube.com/results?search_query=Numb+Linkin+Park+Meteora"}
+  ],
+
+  "neutral": [
+    {"id":"neutral_1","name":"Kesariya","artist":"Arijit Singh","album":"Brahmastra","emotion":"neutral","youtube_link":"https://www.youtube.com/results?search_query=Kesariya+Arijit+Singh+Brahmastra"},
+    {"id":"neutral_2","name":"Heeriye","artist":"Arijit Singh","album":"Heeriye","emotion":"neutral","youtube_link":"https://www.youtube.com/watch?v=ydq_7PnJ31k"},
+    {"id":"neutral_3","name":"Raatan Lambiyan","artist":"Jubin Nautiyal","album":"Shershaah","emotion":"neutral","youtube_link":"https://www.youtube.com/watch?v=0Lp-OL2v3OQ"},
+    {"id":"neutral_4","name":"Hawayein","artist":"Arijit Singh","album":"Jab Harry Met Sejal","emotion":"neutral","youtube_link":"https://www.youtube.com/results?search_query=Hawayein+Arijit+Singh+Jab+Harry+Met+Sejal"},
+    {"id":"neutral_5","name":"Safarnama","artist":"Lucky Ali","album":"Tamasha","emotion":"neutral","youtube_link":"https://www.youtube.com/watch?v=zMnLzQvtj7A"},
+    {"id":"neutral_6","name":"Iktara","artist":"Kavita Seth","album":"Wake Up Sid","emotion":"neutral","youtube_link":"https://www.youtube.com/results?search_query=Iktara+Kavita+Seth+Wake+Up+Sid"},
+    {"id":"neutral_7","name":"Qaafirana","artist":"Arijit Singh","album":"Kedarnath","emotion":"neutral","youtube_link":"https://www.youtube.com/watch?v=OBgOwAf-oVI"},
+    {"id":"neutral_8","name":"O Maahi","artist":"Arijit Singh","album":"Dunki","emotion":"neutral","youtube_link":"https://www.youtube.com/results?search_query=O+Maahi+Arijit+Singh+Dunki"},
+    {"id":"neutral_9","name":"Chaleya","artist":"Arijit Singh","album":"Jawan","emotion":"neutral","youtube_link":"https://www.youtube.com/watch?v=Pms78iAI4hg"},
+    {"id":"neutral_10","name":"Kaise Hua","artist":"Vishal Mishra","album":"Kabir Singh","emotion":"neutral","youtube_link":"https://www.youtube.com/results?search_query=Kaise+Hua+Vishal+Mishra+Kabir+Singh"}
+  ],
+
+  "surprised": [
+    {"id":"surprised_1","name":"Zingaat","artist":"Ajay Gogavale","album":"Dhadak","emotion":"surprised","youtube_link":"https://www.youtube.com/watch?v=lY-P8Ph2QSw"},
+    {"id":"surprised_2","name":"London Thumakda","artist":"Labh Janjua","album":"Queen","emotion":"surprised","youtube_link":"https://www.youtube.com/watch?v=N5bELC8MXeU"},
+    {"id":"surprised_3","name":"Morni Banke","artist":"Guru Randhawa","album":"Badhaai Ho","emotion":"surprised","youtube_link":"https://www.youtube.com/results?search_query=Morni+Banke+Guru+Randhawa+Badhaai+Ho"},
+    {"id":"surprised_4","name":"Nachde Ne Saare","artist":"Jasleen Royal","album":"Baar Baar Dekho","emotion":"surprised","youtube_link":"https://www.youtube.com/results?search_query=Nachde+Ne+Saare+Jasleen+Royal+Baar+Baar+Dekho"},
+    {"id":"surprised_5","name":"Bang Bang","artist":"Benny Dayal","album":"Bang Bang","emotion":"surprised","youtube_link":"https://www.youtube.com/results?search_query=Bang+Bang+Benny+Dayal"},
+    {"id":"surprised_6","name":"Kar Gayi Chull","artist":"Badshah","album":"Kapoor & Sons","emotion":"surprised","youtube_link":"https://www.youtube.com/results?search_query=Kar+Gayi+Chull+Badshah+Kapoor+Sons"},
+    {"id":"surprised_7","name":"Balam Pichkari","artist":"Shalmali Kholgade","album":"Yeh Jawaani Hai Deewani","emotion":"surprised","youtube_link":"https://www.youtube.com/results?search_query=Balam+Pichkari+Shalmali+Kholgade+Yeh+Jawaani+Hai+Deewani"},
+    {"id":"surprised_8","name":"Jai Jai Shivshankar","artist":"Vishal Dadlani","album":"War","emotion":"surprised","youtube_link":"https://www.youtube.com/results?search_query=Jai+Jai+Shivshankar+Vishal+Dadlani+War"},
+    {"id":"surprised_9","name":"Desi Girl","artist":"Shankar Mahadevan","album":"Dostana","emotion":"surprised","youtube_link":"https://www.youtube.com/results?search_query=Desi+Girl+Shankar+Mahadevan+Dostana"},
+    {"id":"surprised_10","name":"Gallan Kardi","artist":"Jazzy B","album":"Jawaani Jaaneman","emotion":"surprised","youtube_link":"https://www.youtube.com/results?search_query=Gallan+Kardi+Jazzy+B+Jawaani+Jaaneman"}
+  ],
+
+  "fearful": [
+    {"id":"fearful_1","name":"Kun Faya Kun","artist":"A.R. Rahman","album":"Rockstar","emotion":"fearful","youtube_link":"https://www.youtube.com/watch?v=R-dXS5TI_dQ"},
+    {"id":"fearful_2","name":"Phir Se Ud Chala","artist":"Mohit Chauhan","album":"Rockstar","emotion":"fearful","youtube_link":"https://www.youtube.com/watch?v=mb7-qmKLoe0"},
+    {"id":"fearful_3","name":"Kahin To","artist":"Rashid Ali","album":"Jaane Tu Ya Jaane Na","emotion":"fearful","youtube_link":"https://www.youtube.com/results?search_query=Kahin+To+Rashid+Ali+Jaane+Tu+Ya+Jaane+Na"},
+    {"id":"fearful_4","name":"Tu Bin Bataye","artist":"Madhushree","album":"Rang De Basanti","emotion":"fearful","youtube_link":"https://www.youtube.com/results?search_query=Tu+Bin+Bataye+Madhushree+Rang+De+Basanti"},
+    {"id":"fearful_5","name":"Shaam","artist":"Amit Trivedi","album":"Aisha","emotion":"fearful","youtube_link":"https://www.youtube.com/results?search_query=Shaam+Amit+Trivedi+Aisha"},
+    {"id":"fearful_6","name":"O Re Piya","artist":"Rahat Fateh Ali Khan","album":"Aaja Nachle","emotion":"fearful","youtube_link":"https://www.youtube.com/results?search_query=O+Re+Piya+Rahat+Fateh+Ali+Khan+Aaja+Nachle"},
+    {"id":"fearful_7","name":"Khwabon Ke Parindey","artist":"Mohit Chauhan","album":"ZNMD","emotion":"fearful","youtube_link":"https://www.youtube.com/results?search_query=Khwabon+Ke+Parindey+Mohit+Chauhan+ZNMD"},
+    {"id":"fearful_8","name":"Zara Zara","artist":"Bombay Jayashri","album":"Rehnaa Hai Terre Dil Mein","emotion":"fearful","youtube_link":"https://www.youtube.com/results?search_query=Zara+Zara+Bombay+Jayashri+Rehnaa+Hai+Terre+Dil+Mein"},
+    {"id":"fearful_9","name":"Hasi","artist":"Ami Mishra","album":"Hamari Adhuri Kahani","emotion":"fearful","youtube_link":"https://www.youtube.com/results?search_query=Hasi+Ami+Mishra+Hamari+Adhuri+Kahani"},
+    {"id":"fearful_10","name":"Alag Aasmaan","artist":"Anuv Jain","album":"Alag Aasmaan","emotion":"fearful","youtube_link":"https://www.youtube.com/results?search_query=Alag+Aasmaan+Anuv+Jain"}
+  ],
+
+  "disgusted": [
+    {"id":"disgusted_1","name":"Bulleya","artist":"Amit Mishra","album":"Ae Dil Hai Mushkil","emotion":"disgusted","youtube_link":"https://www.youtube.com/watch?v=Vb-yf2o3HoM"},
+    {"id":"disgusted_2","name":"Nadaan Parindey","artist":"A.R. Rahman","album":"Rockstar","emotion":"disgusted","youtube_link":"https://www.youtube.com/results?search_query=Nadaan+Parindey+A+R+Rahman+Rockstar"},
+    {"id":"disgusted_3","name":"Aayat","artist":"Arijit Singh","album":"Bajirao Mastani","emotion":"disgusted","youtube_link":"https://www.youtube.com/results?search_query=Aayat+Arijit+Singh+Bajirao+Mastani"},
+    {"id":"disgusted_4","name":"Arziyan","artist":"Javed Ali","album":"Delhi 6","emotion":"disgusted","youtube_link":"https://www.youtube.com/results?search_query=Arziyan+Javed+Ali+Delhi+6"},
+    {"id":"disgusted_5","name":"Maula Mere Maula","artist":"Roop Kumar Rathod","album":"Anwar","emotion":"disgusted","youtube_link":"https://www.youtube.com/results?search_query=Maula+Mere+Maula+Roop+Kumar+Rathod+Anwar"},
+    {"id":"disgusted_6","name":"Afreen Afreen","artist":"Rahat Fateh Ali Khan","album":"Coke Studio","emotion":"disgusted","youtube_link":"https://www.youtube.com/watch?v=8xrC2vCkCeQ"},
+    {"id":"disgusted_7","name":"Husn","artist":"Anuv Jain","album":"Husn","emotion":"disgusted","youtube_link":"https://www.youtube.com/results?search_query=Husn+Anuv+Anuv+Jain"},
+    {"id":"disgusted_8","name":"O Rangrez","artist":"Shreya Ghoshal","album":"Bhaag Milkha Bhaag","emotion":"disgusted","youtube_link":"https://www.youtube.com/results?search_query=O+Rangrez+Shreya+Ghoshal+Bhaag+Milkha+Bhaag"},
+    {"id":"disgusted_9","name":"Dariya","artist":"Arko","album":"Baar Baar Dekho","emotion":"disgusted","youtube_link":"https://www.youtube.com/results?search_query=Dariya+Arko+Baar+Baar+Dekho"},
+    {"id":"disgusted_10","name":"Riha","artist":"Anuv Jain","album":"Riha","emotion":"disgusted","youtube_link":"https://www.youtube.com/results?search_query=Riha+Anuv+Jain"}
+  ]
+}

@@ -37,7 +37,7 @@ export async function detectFace(
   }
   
   try {
-    // Detect faces with expressions
+    
     const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 });
     const result = await faceapi.detectSingleFace(videoElement, options)
       .withFaceLandmarks()
@@ -47,7 +47,6 @@ export async function detectFace(
       return null;
     }
     
-    // Get dominant expression
     const expressions = result.expressions;
     const dominantExpression = Object.keys(expressions).reduce((a, b) => 
       expressions[a] > expressions[b] ? a : b

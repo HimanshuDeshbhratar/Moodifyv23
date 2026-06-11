@@ -43,14 +43,39 @@ export default function SongRecommendations({ emotion }: SongRecommendationsProp
 
   // Handle play/pause button click
   const handlePlayClick = (song: Song) => {
+    // if (!song.previewUrl) {
+    //   // Open Spotify web player if no preview is available
+    //   window.open(`https://open.spotify.com/track/${song.id}`, '_blank');
+    //   toast({
+    //     title: "Opening in Spotify",
+    //     description: "This track doesn't have a preview, opening in Spotify instead",
+    //   });
+    //   return;
+
+
+
     if (!song.previewUrl) {
-      // Open Spotify web player if no preview is available
+
+      if ((song as any).youtube_link) {
+        window.open((song as any).youtube_link, '_blank');
+    
+        toast({
+          title: "Opening on YouTube",
+          description: "Playing recommended song on YouTube",
+        });
+    
+        return;
+      }
+    
       window.open(`https://open.spotify.com/track/${song.id}`, '_blank');
+    
       toast({
         title: "Opening in Spotify",
         description: "This track doesn't have a preview, opening in Spotify instead",
       });
+    
       return;
+    
     }
 
     if (isPlaying === song.id) {
@@ -224,7 +249,14 @@ export default function SongRecommendations({ emotion }: SongRecommendationsProp
                       {getEmotionLabel(song.emotion)}
                     </span>
                     {!song.previewUrl && (
-                      <span className="text-xs text-gray-400" title="Opens in Spotify">
+                      // <span className="text-xs text-gray-400" title="Opens in Spotify">
+                      // {!song.previewUrl && (
+                        <span
+                          className="text-xs text-gray-400"
+                          title={(song as any).youtube_link
+                            ? "Opens in YouTube"
+                            : "Opens in Spotify"}
+                        >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>

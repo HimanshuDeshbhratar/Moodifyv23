@@ -31,6 +31,7 @@ export const songSchema = z.object({
   album: z.string().optional(),
   imageUrl: z.string().optional(),
   previewUrl: z.string().optional(),
+  youtube_link: z.string().optional(),
   emotion: z.enum(["happy", "sad", "angry", "neutral", "surprised", "fearful", "disgusted"]),
 });
 

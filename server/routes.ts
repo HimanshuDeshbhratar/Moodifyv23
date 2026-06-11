@@ -3,6 +3,13 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import fetch from "node-fetch";
 
+import songs from "./data/songs.json";
+import { Youtube } from "lucide-react";
+
+function getFallbackSongs(emotion: string) {
+  return songs[emotion as keyof typeof songs] || songs.neutral;
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes prefixed with /api
   
@@ -34,6 +41,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error('Spotify token error:', error);
         return res.status(500).json({ message: 'Failed to authenticate with Spotify' });
       }
+
+      // if (!tokenResponse.ok) {
+      //   const error = await tokenResponse.text();
+      
+      //   console.error('Spotify token error:', error);
+      
+      //   console.log('Using fallback songs');
+      
+      //   return res.json(
+      //     getFallbackSongs(emotion)
+      //   )
+      // };
       
       const tokenData = await tokenResponse.json() as { access_token: string };
       
@@ -55,7 +74,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const searchData = await searchResponse.json();
       return res.json(searchData);
-      
+
     } catch (error) {
       console.error('Spotify API error:', error);
       return res.status(500).json({ message: 'An error occurred with the Spotify API' });
@@ -117,11 +136,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
       });
       
+      // if (!tokenResponse.ok) {
+      //   const error = await tokenResponse.text();
+      //   console.error('Spotify token error:', error);
+      //   return res.status(500).json({ message: 'Failed to authenticate with Spotify' });
+      // }
+
       if (!tokenResponse.ok) {
         const error = await tokenResponse.text();
         console.error('Spotify token error:', error);
-        return res.status(500).json({ message: 'Failed to authenticate with Spotify' });
+      
+        return res.json(
+          getFallbackSongs(emotion)
+        );
       }
+
       
       const tokenData = await tokenResponse.json() as { access_token: string };
       console.log('Successfully obtained Spotify access token');
@@ -140,24 +169,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
       
+      // if (!searchResponse.ok) {
+      //   const errorText = await searchResponse.text();
+      //   console.error(`Spotify search error (status ${searchResponse.status}):`, errorText);
+        
+      //   // Try to parse error response if it's JSON
+      //   let errorMessage = 'Failed to search Spotify';
+      //   try {
+      //     const errorJSON = JSON.parse(errorText);
+      //     if (errorJSON.error && errorJSON.error.message) {
+      //       errorMessage = `Spotify API error: ${errorJSON.error.message}`;
+      //       console.error('Parsed error:', errorJSON);
+      //     }
+      //   } catch (e) {
+      //     // Not JSON, use text as is
+      //   }
+        
+      //   // return res.status(500).json({ message: errorMessage });
+
+      //   console.log("Spotify failed. Using fallback songs.");
+
+        
+      // }
+     
+
       if (!searchResponse.ok) {
         const errorText = await searchResponse.text();
-        console.error(`Spotify search error (status ${searchResponse.status}):`, errorText);
-        
-        // Try to parse error response if it's JSON
-        let errorMessage = 'Failed to search Spotify';
-        try {
-          const errorJSON = JSON.parse(errorText);
-          if (errorJSON.error && errorJSON.error.message) {
-            errorMessage = `Spotify API error: ${errorJSON.error.message}`;
-            console.error('Parsed error:', errorJSON);
-          }
-        } catch (e) {
-          // Not JSON, use text as is
-        }
-        
-        return res.status(500).json({ message: errorMessage });
+      
+        console.error(
+          `Spotify search error (status ${searchResponse.status}):`,
+          errorText
+        );
+      
+        return res.json(
+          getFallbackSongs(emotion)
+        );
       }
+
+      
       
       const searchData = await searchResponse.json() as { 
         tracks: { 
@@ -192,6 +241,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         artist: track.artists[0].name,
         album: track.album.name,
         imageUrl: track.album.images[0]?.url || '',
+        youtube_link: '',
         previewUrl: track.preview_url || '',
         emotion: emotion
       }));
@@ -199,8 +249,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.json(songs);
       
     } catch (error) {
+      // console.error('Spotify recommendations error:', error);
+      // return res.status(500).json({ message: 'An error occurred with the Spotify API' });
+
       console.error('Spotify recommendations error:', error);
-      return res.status(500).json({ message: 'An error occurred with the Spotify API' });
+
+      console.log(
+        'Using fallback song library'
+      );
+    
+      return res.json(
+        getFallbackSongs(req.params.emotion)
+      );
     }
   });
   
