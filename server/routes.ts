@@ -128,13 +128,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Emotion is required' });
       }
       
-      // Check if Spotify credentials are configured
+      // Fall back to local song library when Spotify credentials are missing
       if (!validateSpotifyCredentials()) {
-        console.error('Spotify credentials not configured');
-        return res.status(500).json({ 
-          message: 'Spotify API credentials not configured. Please check your .env file.',
-          details: 'Missing SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET'
-        });
+        console.log('Spotify credentials not configured — using local song library');
+        const fallback = getFallbackSongs(emotion);
+        // Shuffle a few tracks so refresh still feels dynamic
+        const shuffled = [...fallback].sort(() => Math.random() - 0.5).slice(0, 8);
+        return res.json(shuffled);
       }
       
       // Create diverse searches including both latest and classic songs
@@ -358,12 +358,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Either coordinates (lat, lon) or city name is required' });
       }
       
-      // Check if Weather API key is configured
+      // Fall back to ambient defaults when OpenWeather key is missing
       if (!validateWeatherKey()) {
-        console.error('OpenWeather API key not configured');
-        return res.status(500).json({ 
-          message: 'Weather API key not configured. Please check your .env file.',
-          details: 'Missing OPENWEATHER_API_KEY'
+        console.log('OpenWeather API key not configured — using ambient fallback');
+        const cityName = typeof city === 'string' ? city : 'Mumbai';
+        return res.json({
+          temperature: 28,
+          condition: 'Haze',
+          location: cityName,
+          icon: '50d',
         });
       }
       

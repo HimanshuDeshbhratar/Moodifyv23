@@ -1,138 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import WebcamSection from '@/components/WebcamSection';
-import MoodInformation from '@/components/MoodInformation';
-import SongRecommendations from '@/components/SongRecommendations';
-import WeatherWidget from '@/components/WeatherWidget';
-import { useQuery } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
-import { useToast } from '@/hooks/use-toast';
-import type { Emotion, Weather } from '@shared/schema';
+import { useLocation } from "wouter";
+import CameraFeed from "@/components/CameraFeed";
+import { EMOTION_LABELS, useMoodify } from "@/context/MoodifyContext";
 
 export default function Home() {
-  const { toast } = useToast();
-  const [currentEmotion, setCurrentEmotion] = useState<Emotion | null>(null);
-  const [stableEmotion, setStableEmotion] = useState<Emotion | null>(null);
-  const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
-  const [manualRefreshTrigger, setManualRefreshTrigger] = useState(0);
+  const [, setLocation] = useLocation();
+  const {
+    currentEmotion,
+    stableEmotion,
+    weather,
+    setCurrentEmotion,
+    setStableEmotion,
+    discoverMusic,
+    formatLocation,
+  } = useMoodify();
 
-  // Get user's location for weather data
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setWeatherLocation(`lat=${latitude}&lon=${longitude}`);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          setWeatherLocation("city=New York"); // Default fallback
-          toast({
-            title: "Location access denied",
-            description: "Using default location for weather data.",
-            variant: "destructive"
-          });
-        }
-      );
-    } else {
-      setWeatherLocation("city=New York"); // Default fallback
-      toast({
-        title: "Geolocation not supported",
-        description: "Using default location for weather data.",
-        variant: "destructive"
-      });
-    }
-  }, [toast]);
+  const activeEmotion = stableEmotion || currentEmotion;
+  const labels = activeEmotion ? EMOTION_LABELS[activeEmotion.emotion] : null;
 
-  // Fetch weather data
-  const { data: weatherData } = useQuery<Weather>({
-    queryKey: [weatherLocation ? `/api/weather?${weatherLocation}` : null],
-    enabled: !!weatherLocation,
-    staleTime: 1000 * 60 * 10, // 10 minutes
-  });
+  const locationText = weather
+    ? `LOCATION : ${formatLocation(weather.location)}`
+    : "LOCATION : ACQUIRING…";
 
-  // Handle emotion detection from webcam
-  const handleEmotionDetected = (emotion: Emotion) => {
-    setCurrentEmotion(emotion);
-  };
-  
-  // Handle stable emotion detection for song recommendations
-  const handleStableEmotionDetected = (emotion: Emotion) => {
-    setStableEmotion(emotion);
-  };
-  
-  // Handle manual refresh of recommendations
-  const handleManualRefresh = () => {
-    if (stableEmotion) {
-      setManualRefreshTrigger(prev => prev + 1);
-      toast({
-        title: "Refreshing recommendations",
-        description: `Getting new ${stableEmotion.emotion} songs for you!`,
-        duration: 2000
-      });
-    } else if (currentEmotion) {
-      // Use current emotion if no stable emotion detected yet
-      setStableEmotion(currentEmotion);
-      setManualRefreshTrigger(prev => prev + 1);
-      toast({
-        title: "Refreshing recommendations",
-        description: `Getting ${currentEmotion.emotion} songs based on your current mood!`,
-        duration: 2000
-      });
-    } else {
-      toast({
-        title: "No emotion detected",
-        description: "Please look at the camera to detect your mood first.",
-        variant: "destructive"
-      });
+  const weatherText = weather
+    ? `${weather.temperature}°C · ${weather.condition.toUpperCase()}`
+    : "— · READING AMBIENT…";
+
+  const assessmentText = activeEmotion
+    ? `Neural assessment complete. Ambient ${weather?.condition?.toLowerCase() || "conditions"} indexes matched. ${labels?.spectrum || ""}`
+    : "Neural assessment pending. Align face with camera frame. Ambient indexes will sync once signal is stable.";
+
+  const handleDiscover = () => {
+    discoverMusic();
+    if (activeEmotion) {
+      setLocation("/explore");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#191414] to-[#0D0D0D] text-white">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header Section */}
-        <header className="mb-8">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <div className="bg-[#1DB954] rounded-full p-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                </svg>
-              </div>
-              <h1 className="text-3xl font-bold text-white">Moodify</h1>
-            </div>
-            
-            {weatherData && <WeatherWidget weather={weatherData} />}
-          </div>
-          
-          <p className="text-gray-400 mt-2 text-center md:text-left">Experience music that matches your mood and weather</p>
-        </header>
+    <div className="min-h-screen bg-black flex flex-col">
+      {/* Header */}
+      <header className="px-4 md:px-8 pt-5 pb-3 flex items-center justify-between border-b border-white/20">
+        <h1 className="font-sans font-bold text-lime text-sm md:text-base tracking-wide">
+          MOODIFY <span className="font-normal">/</span> EDITORIAL
+        </h1>
+        <span className="font-mono text-[10px] md:text-xs text-moodify-muted tracking-wider">
+          SYS_ACTIVE
+        </span>
+      </header>
 
-        {/* Main Content */}
-        <main>
-          {/* Webcam and Emotion Detection Section */}
-          <section className="mb-12">
-            <div className="flex flex-col lg:flex-row gap-8">
-              <WebcamSection 
-                onEmotionDetected={handleEmotionDetected} 
-                onStableEmotionDetected={handleStableEmotionDetected}
-              />
-              <MoodInformation currentMood={currentEmotion} stableEmotion={stableEmotion} />
-            </div>
-          </section>
+      {/* Location bar — solid strip matching Figma HUD */}
+      <div className="bg-[#0a0a0a] border-y border-white/10 px-4 md:px-8 py-3 flex items-center justify-between gap-3 font-mono text-[10px] md:text-xs tracking-wider">
+        <span className="text-lime truncate">{locationText}</span>
+        <span className="text-lime shrink-0 text-right">{weatherText}</span>
+      </div>
 
-          <SongRecommendations 
-            emotion={stableEmotion || currentEmotion} 
-            onManualRefresh={handleManualRefresh}
-            refreshTrigger={manualRefreshTrigger}
+      {/* Main content */}
+      <div className="flex-1 flex flex-col lg:flex-row lg:items-stretch lg:gap-10 px-4 md:px-8 py-6 md:py-10 max-w-6xl mx-auto w-full">
+        <div className="flex-1 flex flex-col justify-center">
+          <CameraFeed
+            onEmotionDetected={setCurrentEmotion}
+            onStableEmotionDetected={setStableEmotion}
+            cameraLabel={labels?.camera || "CAMERA STATE : AWAITING SIGNAL"}
           />
-        </main>
+        </div>
 
-        {/* Footer Section */}
-        <footer className="mt-12 pt-6 border-t border-white/10 text-center text-gray-500 text-sm">
-          <p>Powered by Spotify API, Face-API.js and OpenWeather API</p>
-          <p className="mt-2">© {new Date().getFullYear()} Moodify - All emotions welcome</p>
-        </footer>
+        {/* CTA block */}
+        <div className="mt-8 lg:mt-0 lg:w-[380px] xl:w-[420px] flex flex-col justify-end">
+          <div className="bg-black border border-moodify-border p-5 md:p-7 flex flex-col gap-6">
+            <p className="font-sans text-sm md:text-[15px] leading-relaxed text-moodify-muted-light">
+              {assessmentText}
+            </p>
+            <button
+              type="button"
+              onClick={handleDiscover}
+              className="w-full border border-lime bg-black py-4 px-4 font-mono text-xs md:text-sm tracking-widest uppercase text-lime hover:bg-lime hover:text-black transition-colors"
+            >
+              DISCOVER EXPERIMENTAL MUSIC
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
